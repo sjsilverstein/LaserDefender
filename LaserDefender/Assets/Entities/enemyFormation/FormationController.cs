@@ -12,10 +12,10 @@ public class FormationController : MonoBehaviour
     private float xmin;
     public float speed = 2f;
     public float spawnDelay = 0.5f;
+    private float respawnTimer;
 
 
     public GameObject enemyPrefab;
-
     // Use this for initialization
     void Start()
     {
@@ -25,9 +25,15 @@ public class FormationController : MonoBehaviour
         Vector3 rightEdge = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, distanceToCamera));
         xmax = rightEdge.x;
         xmin = leftEdge.x;
-
+        respawnTimer = Time.time + 15;
         SpawnEnemies();
         
+    }
+    void RespawnWave() {
+        if (respawnTimer < Time.time) {
+            SpawnUntilFull();
+            respawnTimer = Time.time + 15;
+        }
     }
 
     void SpawnEnemies() {
@@ -59,6 +65,7 @@ public class FormationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RespawnWave();
         if (movingRight)
         {
             transform.position += new Vector3(speed * Time.deltaTime, 0);
